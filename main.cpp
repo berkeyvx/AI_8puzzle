@@ -53,9 +53,9 @@ public: // {7,2,4,5,0,6,8,3,1}
     
     void BFS();
     
-    void DLS(int depth, bool IDS = false);
+    bool DLS(int depth, bool IDS = false);
     
-    void IDS(int depth);
+    void IDS(int depth = 50);
     
 
     void randomProblemGenerator();
@@ -88,7 +88,7 @@ int main(int argc, const char * argv[]) {
         p.DLS(10);
         p.DLS(30);
         p.DLS(80);
-        p.IDS(20);
+        p.IDS();
         std::cout << "\n\n";
         for (int i = 0; i <= 10; ++i) {
             std::cout << "RANDOM PROBLEM NO: " << i << "\n";
@@ -98,7 +98,7 @@ int main(int argc, const char * argv[]) {
             p.DLS(10);
             p.DLS(30);
             p.DLS(80);
-            p.IDS(20);
+            p.IDS();
             std::cout << "\n\n";
         }
     }
@@ -107,6 +107,7 @@ int main(int argc, const char * argv[]) {
         _8puzzle p(argv[1]);
         p.DFS();
         p.BFS();
+        p.IDS();
     }
     if(argc == 3){
         int depth = std::stoi(argv[2]);
@@ -217,7 +218,7 @@ void _8puzzle::DFS(){
 
 
 
-void _8puzzle::DLS(int depth, bool IDS){
+bool _8puzzle::DLS(int depth, bool IDS){
     std::stack<std::pair<std::array<int, 9>, int>> s; // stack for DFS
     std::unordered_set<std::string> set; // keep visited list
     bool solutionFind = false;
@@ -250,7 +251,7 @@ void _8puzzle::DLS(int depth, bool IDS){
         // possible path is not in set so add in stack
         for(auto& i: possiblePaths){
             // depth control part
-            if(i.second - 1 >= depth){
+            if(i.second >= depth){
                 continue;
             }
             
@@ -273,12 +274,17 @@ void _8puzzle::DLS(int depth, bool IDS){
     currentState.second = 0;
     nodesExpanded = 0;
     maximumSizeOfFringe = 0;
+    
+    return solutionFind;
 }
 
 
 void _8puzzle::IDS(int depth){
+    bool f = false;
     for(int i = 0; i <= depth; i++){
-        DLS(i, true);
+        f = DLS(i, true);
+        if(f)
+            break;
     }
 }
 
